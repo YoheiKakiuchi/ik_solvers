@@ -3,7 +3,7 @@
 
 import cnoid.Util
 from cnoid_pyutil import *
-from cnoid import FullbodyIK
+from cnoid import IKSolvers
 import numpy as np
 
 fname = cnoid.Util.getShareDirectory() + '/model/SR1/SR1.body'
@@ -23,10 +23,10 @@ robot.calcCenterOfMass()
 
 flushRobotView('SR1')
 
-constraints = FullbodyIK.Constraints()
+constraints = IKSolvers.Constraints()
 
 ## task: rarm to target
-constraint = FullbodyIK.PositionConstraint()
+constraint = IKSolvers.PositionConstraint()
 constraint.A_link = robot.link('RARM_WRIST_R');
 constraint.A_localpos = cnoidPosition(translation=np.array([0.0, 0.0, -0.02]))
 #constraint.B_link() = nullptr;
@@ -36,7 +36,7 @@ constraint.B_localpos = cnoidPosition(translation=np.array([0.3, -0.2, 0.8]), ro
 constraints.push_back(constraint)
 
 ## task: larm to target. rotation-axis nil
-constraint = FullbodyIK.PositionConstraint()
+constraint = IKSolvers.PositionConstraint()
 constraint.A_link = robot.link('LARM_WRIST_R')
 constraint.A_localpos = cnoidPosition(translation=np.array([0.0, 0.0,-0.02]))
 #constraint->B_link() = nullptr;
@@ -50,7 +50,7 @@ constraint.weight = weight ## not require??
 constraints.push_back(constraint)
 
 ## task: rleg to target
-constraint = FullbodyIK.PositionConstraint()
+constraint = IKSolvers.PositionConstraint()
 constraint.A_link = robot.link('RLEG_ANKLE_R')
 constraint.A_localpos = cnoidPosition(translation=np.array([0.0, 0.0, -0.04]))
 #constraint->B_link() = nullptr;
@@ -58,7 +58,7 @@ constraint.B_localpos = cnoidPosition(translation=np.array([0.0, -0.2, 0.0]))
 constraints.push_back(constraint)
 
 ## task: lleg to target
-constraint = FullbodyIK.PositionConstraint()
+constraint = IKSolvers.PositionConstraint()
 constraint.A_link = robot.link('LLEG_ANKLE_R')
 constraint.A_localpos = cnoidPosition(translation=np.array([0.0, 0.0, -0.04]))
 #constraint->B_link() = nullptr;
@@ -66,14 +66,14 @@ constraint.B_localpos = cnoidPosition(translation=np.array([0.0, 0.2, 0.0]))
 constraints.push_back(constraint)
 
 ## task: COM to target
-constraint = FullbodyIK.COMConstraint()
+constraint = IKSolvers.COMConstraint()
 constraint.A_robot = robot
 constraint.B_localp = np.array([0.0, 0.0, 0.7])
 constraints.push_back(constraint)
 
 
 ## task: joint angle to target
-constraint = FullbodyIK.JointAngleConstraint()
+constraint = IKSolvers.JointAngleConstraint()
 constraint.joint = robot.link('CHEST')
 constraint.targetq = 0.1
 constraints.push_back(constraint)
@@ -86,7 +86,7 @@ for const in constraints:
 jlim_avoid_weight_old = np.zeros(6 + robot.getNumJoints())
 dq_weight_all = np.ones(6 + robot.getNumJoints())
 
-loop = FullbodyIK.solveFullbodyIKLoopFast(robot,
+loop = IKSolvers.solveFullbodyIKLoopFast(robot,
                                           constraints,
                                           jlim_avoid_weight_old,
                                           dq_weight_all,
