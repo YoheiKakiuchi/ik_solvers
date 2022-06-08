@@ -159,7 +159,6 @@ install(DIRECTORY include/${PROJECT_NAME}/
 ## Testing ##
 #############
 add_subdirectory(sample)
-add_subdirectory(python)
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_fullbody_inverse_kinematics_solver.cpp)
