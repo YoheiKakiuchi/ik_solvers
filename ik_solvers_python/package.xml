@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>ik_solvers_python</name>
+  <version>0.0.0</version>
+  <description>ik_solvers (python binding for choreonoid)</description>
+
+  <maintainer email="hiraoka@jsk.imi.i.u-tokyo.ac.jp">Naoki-Hiraoka</maintainer>
+
+  <license>MIT</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <depend>ik_constraint</depend>
+  <depend>fullbody_inverse_kinematics_solver</depend>
+  <depend>prioritized_inverse_kinematics_solver</depend>
+  <depend>osqp-eigen</depend>
+
+</package>
