@@ -17,8 +17,15 @@ target_link_libraries(${TARGET}
 target_compile_definitions(${TARGET} PUBLIC ${CHOREONOID_COMPILE_DEFINITIONS})
 
 set(choreonoid_PYTHON_DIR ${CHOREONOID_ROOT_DIR}/${CHOREONOID_PYTHON_SUBDIR}/cnoid)## copy from jsk_choreonoid
-#set_target_properties(${TARGET}
-#  PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${choreonoid_PYTHON_DIR})# copy the library for calling 'import cnoid.hoge'
 
-install(TARGETS ${TARGET} LIBRARY DESTINATION ${choreonoid_PYTHON_DIR})
-
+message("CHOREONOID_BIN_DIR: ${CHOREONOID_BIN_DIR}")
+if ("${CHOREONOID_BIN_DIR}" MATCHES ".*install.*")
+  ## install
+  message("in INSTALLSPACE")
+  install(TARGETS ${TARGET} LIBRARY DESTINATION ${choreonoid_PYTHON_DIR})
+else()
+  ## devel
+  message("in DEVELSPACE")
+  set_target_properties(${TARGET}
+    PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${choreonoid_PYTHON_DIR})# copy the library for calling 'import cnoid.hoge'
+endif()
