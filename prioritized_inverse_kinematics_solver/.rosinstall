@@ -6,5 +6,8 @@
     local-name: qp_solvers
     uri: https://github.com/Naoki-Hiraoka/qp_solvers.git
 - git:
+    uri: https://github.com/Naoki-Hiraoka/abseil_catkin.git
+    local-name: abseil_catkin
+- git:
     local-name: ik_solvers
     uri: https://github.com/Naoki-Hiraoka/prioritized_qp.git

@@ -1,5 +1,5 @@
 #include <prioritized_inverse_kinematics_solver/PrioritizedInverseKinematicsSolver.h>
-#include <prioritized_qp/PrioritizedQPSolver.h>
+#include <prioritized_qp_osqp/prioritized_qp_osqp.h>
 #include <ik_constraint/PositionConstraint.h>
 #include <ik_constraint/COMConstraint.h>
 #include <ik_constraint/JointAngleConstraint.h>
@@ -101,13 +101,13 @@ int main(void){
       constraints[i][j]->debuglevel() = 1;//debug
     }
   }
+  prioritized_inverse_kinematics_solver::IKParam param;
+  param.debugLevel = 1;
+  param.maxIteration = 40;
   int loop = prioritized_inverse_kinematics_solver::solveIKLoop(variables,
                                                                 constraints,
                                                                 tasks,
-                                                                40,
-                                                                1e-6,
-                                                                1//debug
-                                                                );
+                                                                param);
 
   std::cerr << "loop: " << loop << std::endl;
 
