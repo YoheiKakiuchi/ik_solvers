@@ -2,11 +2,15 @@
    @author YoheiKakiuchi
 */
 
+//#define USE_PRIORITIZED
+
 #include <cnoid/PyUtil>
 //
 #include <fullbody_inverse_kinematics_solver/FullbodyInverseKinematicsSolverFast.h>
 //
+#ifdef USE_PRIORITIZED
 #include <prioritized_inverse_kinematics_solver/PrioritizedInverseKinematicsSolver.h>
+#endif
 //
 #include <ik_constraint/AngularMomentumConstraint.h>
 #include <ik_constraint/COMConstraint.h>
@@ -66,8 +70,8 @@ public:
 
 typedef std::shared_ptr < Constraints > ConstraintsPtr;
 typedef std::vector < std::shared_ptr < Constraints > > ConstraintsPtrList;
+#ifdef USE_PRIORITIZED
 typedef std::shared_ptr< prioritized_qp_base::Task > TaskPtr;
-
 class Tasks
 {
 public:
@@ -83,8 +87,8 @@ public:
   size_t size() { return tasks.size(); }
   TaskPtr &at(int i) { return tasks.at(i); }
 };
-
 typedef std::shared_ptr < Tasks > TasksPtr;
+#endif
 
 int solveFullbodyIKLoopFast (const cnoid::BodyPtr& robot,
                              //const std::vector<std::shared_ptr<IK::IKConstraint> >& ikc_list,
@@ -107,6 +111,7 @@ int solveFullbodyIKLoopFast (const cnoid::BodyPtr& robot,
                                       debugLevel);
 }
 
+#ifdef USE_PRIORITIZED
 //std::function<void(std::shared_ptr<prioritized_qp_base::Task>&,int)>
 void taskGeneratorFunc (std::shared_ptr<prioritized_qp_base::Task>& task, int debugLevel)
 {
@@ -158,6 +163,7 @@ int prioritized_solveIKLoop(const std::vector<cnoid::LinkPtr>& variables,
 
   return ret;
 }
+#endif
 
 class pyIKConstraint : public IK::IKConstraint
 {
@@ -201,7 +207,7 @@ PYBIND11_MODULE(IKSolvers, m)
     //py::class_< prioritized_qp_base::Task, TaskPtr > (m, "Task")
     //  .def(py::init<>())
     //  ;
-
+#ifdef USE_PRIORITIZED
     py::class_< Tasks, TasksPtr > (m, "Tasks")
       .def(py::init<>())
       //.def("size", &Tasks::size)
@@ -210,7 +216,7 @@ PYBIND11_MODULE(IKSolvers, m)
       //     py::keep_alive<0, 1>())
       //.def("push_back", (void (Tasks::*)(TaskPtr &)) &Tasks::push_back)
       ;
-
+#endif
     py::class_<IK::AngularMomentumConstraint, AngularMomentumConstraintPtr, IK::IKConstraint > (m, "AngularMomentumConstraint")
       .def(py::init<>());
 
@@ -340,7 +346,7 @@ PYBIND11_MODULE(IKSolvers, m)
           py::arg("max_iteration") = 1,
           py::arg("wn") = 1e-6,
           py::arg("debug_level") = 0);
-
+#ifdef USE_PRIORITIZED
     m.def("prioritized_solveIKLoop", &prioritized_solveIKLoop,
           py::arg("variables"),
           py::arg("constraints_list"),
@@ -349,4 +355,5 @@ PYBIND11_MODULE(IKSolvers, m)
           py::arg("wn") = 1e-6,
           py::arg("debug_level") = 0,
           py::arg("dt") = 0.1);
+#endif
 }
