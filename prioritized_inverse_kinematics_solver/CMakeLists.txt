@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   prioritized_qp_osqp
   )
 find_package(choreonoid REQUIRED)
+find_package(OsqpEigen REQUIRED)
 
 catkin_package(
   INCLUDE_DIRS include

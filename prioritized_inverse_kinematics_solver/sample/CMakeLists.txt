@@ -6,7 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   prioritized_qp_osqp
   roslib
   )
-find_package(choreonoid REQUIRED)
+#find_package(choreonoid REQUIRED)
 
 include_directories(
   include
