@@ -2,7 +2,7 @@
    @author YoheiKakiuchi
 */
 
-//#define USE_PRIORITIZED
+#define USE_PRIORITIZED
 
 #include <cnoid/PyUtil>
 //
@@ -115,16 +115,16 @@ int solveFullbodyIKLoopFast (const cnoid::BodyPtr& robot,
 //std::function<void(std::shared_ptr<prioritized_qp_base::Task>&,int)>
 void taskGeneratorFunc (std::shared_ptr<prioritized_qp_base::Task>& task, int debugLevel)
 {
-  std::shared_ptr<prioritized_qp::Task> taskOSQP = std::dynamic_pointer_cast<prioritized_qp::Task> (task);
+  std::shared_ptr<prioritized_qp_osqp::Task> taskOSQP = std::dynamic_pointer_cast<prioritized_qp_osqp::Task>(task);
   if(!taskOSQP){
-    task = std::make_shared<prioritized_qp::Task>();
-    taskOSQP = std::dynamic_pointer_cast<prioritized_qp::Task>(task);
+    task = std::make_shared<prioritized_qp_osqp::Task>();
+    taskOSQP = std::dynamic_pointer_cast<prioritized_qp_osqp::Task>(task);
   }
-  taskOSQP->solver().settings()->setVerbosity(debugLevel);
-  taskOSQP->solver().settings()->setMaxIteration(4000);
-  taskOSQP->solver().settings()->setAbsoluteTolerance(1e-4);// 大きい方が速いが，不正確
-  taskOSQP->solver().settings()->setRelativeTolerance(1e-4);// 大きい方が速いが，不正確
-  taskOSQP->solver().settings()->setScaledTerimination(true);// avoid too severe termination check
+  taskOSQP->settings().verbose = debugLevel;
+  taskOSQP->settings().max_iter = 4000;
+  taskOSQP->settings().eps_abs = 1e-3;// 大きい方が速いが，不正確. 1e-5はかなり小さい. 1e-4は普通
+  taskOSQP->settings().eps_rel = 1e-3;// 大きい方が速いが，不正確. 1e-5はかなり小さい. 1e-4は普通
+  taskOSQP->settings().scaled_termination = true;// avoid too severe termination check
 }
 
 int prioritized_solveIKLoop(const std::vector<cnoid::LinkPtr>& variables,
@@ -146,15 +146,16 @@ int prioritized_solveIKLoop(const std::vector<cnoid::LinkPtr>& variables,
     ikc_list_.push_back(copied_vec);
   }
   std::vector< TaskPtr > prevTasks_;
-
+  prioritized_inverse_kinematics_solver::IKParam param;
+  param.maxIteration = max_iteration;
+  param.wn = wn;
+  //param.we = we;
+  param.debugLevel = debugLevel;
+  param.dt = dt;
   int ret = prioritized_inverse_kinematics_solver::solveIKLoop
-    (variables, ikc_list_, prevTasks_,
-     max_iteration,
-     wn,
-     debugLevel,
-     dt,
+    (variables, ikc_list_, prevTasks_, param,
      static_cast < std::function<void(std::shared_ptr<prioritized_qp_base::Task>&,int)> > ( &taskGeneratorFunc)
-     );
+    );
 
   prevTasks->tasks.clear();
   for(int i = 0; i < prevTasks_.size(); i++) {
