@@ -4,7 +4,7 @@
   <version>0.0.0</version>
   <description>ik_solvers (python binding for choreonoid)</description>
 
-  <maintainer email="hiraoka@jsk.imi.i.u-tokyo.ac.jp">Naoki-Hiraoka</maintainer>
+  <maintainer email="kakiuchi.yohei.sw@tut.jp">Yohei Kakiuchi</maintainer>
 
   <license>MIT</license>
 
@@ -12,6 +12,5 @@
   <depend>ik_constraint</depend>
   <depend>fullbody_inverse_kinematics_solver</depend>
   <depend>prioritized_inverse_kinematics_solver</depend>
-  <depend>osqp-eigen</depend>
 
 </package>
