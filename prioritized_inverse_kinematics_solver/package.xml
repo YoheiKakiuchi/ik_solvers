@@ -12,5 +12,6 @@
   <depend>ik_constraint</depend>
   <depend>prioritized_qp_osqp</depend>
   <depend>choreonoid</depend>
+  <depend>osqp-eigen</depend>
 
 </package>
