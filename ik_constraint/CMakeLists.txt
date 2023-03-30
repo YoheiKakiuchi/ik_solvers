@@ -4,7 +4,7 @@ cmake_policy(SET CMP0057 NEW)
 
 project(ik_constraint)
 
-add_compile_options(-std=c++11)
+#add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE Release)
 
 find_package(catkin REQUIRED)

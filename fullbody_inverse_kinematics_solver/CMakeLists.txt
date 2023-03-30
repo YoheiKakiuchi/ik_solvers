@@ -3,7 +3,7 @@ cmake_policy(SET CMP0003 NEW)
 cmake_policy(SET CMP0057 NEW)
 project(fullbody_inverse_kinematics_solver)
 
-add_compile_options(-std=c++11)
+#add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
 ## Find catkin macros and libraries
