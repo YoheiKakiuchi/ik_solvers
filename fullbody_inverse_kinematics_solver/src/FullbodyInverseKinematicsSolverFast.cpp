@@ -105,6 +105,7 @@ namespace fik {
 #define dbgn(var) std::cout << #var"= " << std::endl <<(var) << std::endl
 #define dbgv(var) std::cout << #var"= " << (var.transpose()) << std::endl
     if (debugLevel >= 1) {
+      dbgn(S_q);
       dbgn(H);
       dbg(H.rows());
       dbg(H.cols());
@@ -124,7 +125,11 @@ namespace fik {
       return;
     }
     dq_all = (S_q.transpose() * dq_all).eval();
-
+    if (debugLevel >= 1) {
+        dbgv(dq_weight_all);
+        dbgv(dq_all);
+        std::cout << "### loop finished ###" << std::endl;
+    }
     // update rootlink pos rot
     robot->rootLink()->p() += dq_all.head<3>();
     if(dq_all.head<6>().tail<3>().norm() != 0){
@@ -138,7 +143,7 @@ namespace fik {
     }
     // update joint angles
     for (size_t i = 0; i < robot->numJoints(); ++i) {
-      if(dq_weight_all[i] > 0.0) {// dq_weight_all == 0.0の関節は更新しない
+      if(dq_weight_all[6+i] > 0.0) {// dq_weight_all == 0.0の関節は更新しない
         robot->joint(i)->q() += dq_all(6+i);
         if(robot->joint(i)->q() > robot->joint(i)->q_upper()) robot->joint(i)->q() = robot->joint(i)->q_upper();
         if(robot->joint(i)->q() < robot->joint(i)->q_lower()) robot->joint(i)->q() = robot->joint(i)->q_lower();
