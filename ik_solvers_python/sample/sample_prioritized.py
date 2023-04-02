@@ -86,12 +86,12 @@ for constl in constraints:
     for const in constl:
         const.debuglevel = 1
 
-loop = IKSolvers.IKLoop(variables,
-                        constraints,
-                        tasks,
-                        40,
-                        1e-6,
-                        1)
+loop = IKSolvers.prioritized_solveIKLoop(variables,
+                                         constraints,
+                                         tasks,
+                                         40,
+                                         1e-6,
+                                         1)
 
 print('loop : {}'.format(loop))
 
