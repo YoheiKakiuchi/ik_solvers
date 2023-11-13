@@ -290,7 +290,24 @@ PYBIND11_MODULE(IKSolvers, m)
       ;
 
     py::class_<IK::JointLimitConstraint, JointLimitConstraintPtr, IK::IKConstraint > (m, "JointLimitConstraint")
-      .def(py::init<>());
+      .def(py::init<>())
+      .def_property("joint",
+                    (cnoid::LinkPtr & (IK::JointLimitConstraint::*)()) &IK::JointLimitConstraint::joint,
+                    //&IK::JointLimitConstraint::set_joint)
+                    [](IK::JointLimitConstraint &self, cnoid::LinkPtr &in) { self.joint() = in; })
+      .def_property("maxError",
+                    (double & (IK::JointLimitConstraint::*)()) &IK::JointLimitConstraint::maxError,
+                    //&IK::JointLimitConstraint::set_maxError)
+                    [](IK::JointLimitConstraint &self, double &in) { self.maxError() = in; })
+      .def_property("precision",
+                    (double & (IK::JointLimitConstraint::*)()) &IK::JointLimitConstraint::precision,
+                    //&IK::JointLimitConstraint::set_precision)
+                    [](IK::JointLimitConstraint &self, double &in) { self.precision() = in; })
+      .def_property("weight",
+                    (double & (IK::JointLimitConstraint::*)()) &IK::JointLimitConstraint::weight,
+                    //&IK::JointLimitConstraint::set_weight)
+                    [](IK::JointLimitConstraint &self, double &in) { self.weight() = in; })
+      ;
 
     py::class_<IK::JointVelocityConstraint, JointVelocityConstraintPtr, IK::IKConstraint > (m, "JointVelocityConstraint")
       .def(py::init<>());
