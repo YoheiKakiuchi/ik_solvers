@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 cmake_policy(SET CMP0003 NEW)
 cmake_policy(SET CMP0057 NEW)
 
@@ -7,16 +7,16 @@ project(ik_constraint)
 #add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE Release)
 
-find_package(catkin REQUIRED)
-
+#find_package(catkin REQUIRED)
+find_package(ament_cmake REQUIRED)
 find_package(choreonoid REQUIRED)
 
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES ik_constraint
+#catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES ik_constraint
 #  CATKIN_DEPENDS other_catkin_pkg
 #  DEPENDS CHOREONOID
-)
+#)
 
 ###########
 ## Build ##
@@ -39,7 +39,7 @@ include_directories(
 ##endforeach(lib)
 ##message ("cnoid_body_lib: ${CHOREONOID_BODY_LIBRARIES_ABS}")
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/Jacobian.cpp
   src/IKConstraint.cpp
   src/PositionConstraint.cpp
@@ -64,13 +64,13 @@ target_link_libraries(${PROJECT_NAME}
 #############
 
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.h"
 )
 
@@ -86,3 +86,7 @@ install(DIRECTORY include/${PROJECT_NAME}/
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+ament_export_libraries(ik_constraint)
+ament_export_include_directories(include)
+ament_package()
