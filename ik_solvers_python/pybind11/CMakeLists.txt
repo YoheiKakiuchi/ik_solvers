@@ -4,12 +4,14 @@ add_cnoid_python_module(${TARGET} PyIKSolvers.cpp)
 
 target_include_directories(${TARGET} PUBLIC
   include
-  ${catkin_INCLUDE_DIRS}
+  ${fullbody_inverse_kinematics_solver_INCLUDE_DIRS}
+  ${prioritized_inverse_kinematics_solver_INCLUDE_DIRS}
   ${CHOREONOID_INCLUDE_DIRS}
 )
 
 target_link_libraries(${TARGET}
-  ${catkin_LIBRARIES}
+  ${fullbody_inverse_kinematics_solver_LIBRARIES}
+  ${prioritized_inverse_kinematics_solver_LIBRARIES}
   ${CHOREONOID_BODY_LIBRARIES}
   OsqpEigen::OsqpEigen
   )

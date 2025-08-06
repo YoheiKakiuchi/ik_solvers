@@ -6,22 +6,27 @@ project(ik_solvers_python)
 #add_compile_options(-std=c++11)
 set(CMAKE_BUILD_TYPE RelWithDebInfo)
 
-find_package(catkin REQUIRED COMPONENTS
-  fullbody_inverse_kinematics_solver
-  prioritized_inverse_kinematics_solver
-  )
+#find_package(catkin REQUIRED COMPONENTS
+#  fullbody_inverse_kinematics_solver
+#  prioritized_inverse_kinematics_solver
+#  )
+find_package(ament_cmake REQUIRED)
+find_package(fullbody_inverse_kinematics_solver REQUIRED)
+find_package(prioritized_inverse_kinematics_solver REQUIRED)
 find_package(choreonoid REQUIRED)
 find_package(OsqpEigen REQUIRED)
 
-catkin_package(
-#  LIBRARIES fullbody_inverse_kinematics_solver
-  CATKIN_DEPENDS fullbody_inverse_kinematics_solver prioritized_inverse_kinematics_solver ik_constraint
-  DEPENDS OsqpEigen
-)
+#catkin_package(
+##  LIBRARIES fullbody_inverse_kinematics_solver
+#  CATKIN_DEPENDS fullbody_inverse_kinematics_solver prioritized_inverse_kinematics_solver ik_constraint
+#  DEPENDS OsqpEigen
+#)
 
 add_subdirectory(pybind11)
 
 install(DIRECTORY sample
-  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+  DESTINATION share/${PROJECT_NAME}
   USE_SOURCE_PERMISSIONS
 )
+
+ament_package()
