@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.2)
+cmake_minimum_required(VERSION 3.8)
 cmake_policy(SET CMP0003 NEW)
 cmake_policy(SET CMP0057 NEW)
 project(fullbody_inverse_kinematics_solver)
@@ -9,9 +9,11 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
-  ik_constraint
-  )
+#find_package(catkin REQUIRED COMPONENTS
+#  ik_constraint
+#)
+find_package(ament_cmake REQUIRED)
+find_package(ik_constraint REQUIRED)
 find_package(choreonoid REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -103,12 +105,12 @@ find_package(choreonoid REQUIRED)
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
-  INCLUDE_DIRS include
-  LIBRARIES fullbody_inverse_kinematics_solver
-  CATKIN_DEPENDS ik_constraint
+#catkin_package(
+#  INCLUDE_DIRS include
+#  LIBRARIES fullbody_inverse_kinematics_solver
+#  CATKIN_DEPENDS ik_constraint
 #  DEPENDS CHOREONOID
-)
+#)
 
 ###########
 ## Build ##
@@ -118,7 +120,7 @@ catkin_package(
 ## Your package locations should be listed before other locations
 include_directories(
   include
-  ${catkin_INCLUDE_DIRS}
+  ${ik_constraint_INCLUDE_DIRS}
   ${CHOREONOID_INCLUDE_DIRS}
 )
 
@@ -133,12 +135,12 @@ include_directories(
 ##endforeach(lib)
 ##message ("cnoid_body_lib: ${CHOREONOID_BODY_LIBRARIES_ABS}")
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
   src/FullbodyInverseKinematicsSolverFast.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
+  ${ik_constraint_LIBRARIES}
   ${CHOREONOID_BODY_LIBRARIES}
   )
 
@@ -146,19 +148,19 @@ target_link_libraries(${PROJECT_NAME}
 ## Install ##
 #############
 install(TARGETS ${PROJECT_NAME}
-  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 install(DIRECTORY include/${PROJECT_NAME}/
-  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
   FILES_MATCHING PATTERN "*.h"
 )
 
 #############
 ## Testing ##
 #############
-add_subdirectory(sample)
+##add_subdirectory(sample) ## TODO
 
 ## Add gtest based cpp test target and link libraries
 # catkin_add_gtest(${PROJECT_NAME}-test test/test_fullbody_inverse_kinematics_solver.cpp)
@@ -168,3 +170,7 @@ add_subdirectory(sample)
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+ament_export_libraries(fullbody_inverse_kinematics_solver)
+ament_export_include_directories(include)
+ament_package()
