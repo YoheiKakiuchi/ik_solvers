@@ -129,8 +129,8 @@ void taskGeneratorFunc (std::shared_ptr<prioritized_qp_base::Task>& task, int de
 
 int prioritized_solveIKLoop(const std::vector<cnoid::LinkPtr>& variables,
          const ConstraintsPtrList &lst,
-         TasksPtr& prevTasks,
-         size_t max_iteration, double wn, int debugLevel, double dt)
+         TasksPtr& prevTasks, std::vector<double> dqWeight,
+         size_t max_iteration, double wn, double we, int debugLevel, double dt)
          //size_t max_iteration = 1,
          //double wn = 1e-6,
          //int debugLevel = 0,
@@ -149,9 +149,10 @@ int prioritized_solveIKLoop(const std::vector<cnoid::LinkPtr>& variables,
   prioritized_inverse_kinematics_solver::IKParam param;
   param.maxIteration = max_iteration;
   param.wn = wn;
-  //param.we = we;
+  param.we = we;
   param.debugLevel = debugLevel;
   param.dt = dt;
+  param.dqWeight = dqWeight;
   int ret = prioritized_inverse_kinematics_solver::solveIKLoop
     (variables, ikc_list_, prevTasks_, param,
      static_cast < std::function<void(std::shared_ptr<prioritized_qp_base::Task>&,int)> > ( &taskGeneratorFunc)
@@ -356,6 +357,10 @@ PYBIND11_MODULE(IKSolvers, m)
                     [](IK::PositionConstraint &self, cnoid::Matrix3d &in) { self.eval_localR() = in; })
       ;
 
+    py::class_<prioritized_inverse_kinematics_solver::IKParam> (m, "IKParam")
+    .def(py::init<>())
+    ;
+
     m.def("solveFullbodyIKLoopFast", &solveFullbodyIKLoopFast,
           py::arg("robot"),
           py::arg("constraints"),
@@ -369,8 +374,10 @@ PYBIND11_MODULE(IKSolvers, m)
           py::arg("variables"),
           py::arg("constraints_list"),
           py::arg("prev_tasks"),
+          py::arg("dqWeight"),
           py::arg("max_iteration") = 1,
           py::arg("wn") = 1e-6,
+          py::arg("we") = 1e-6,
           py::arg("debug_level") = 0,
           py::arg("dt") = 0.1);
 #endif
